@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e785036b-5753-4b9b-8c56-1287f91a7238" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="mc-ageFlow" doc:id="785e564e-1d51-4d64-b9f4-186c77fa0566" >
+		<http:listener doc:name="Listener" doc:id="7ae8dc91-c565-4d30-86b1-5024e34eb095" config-ref="HTTP_Listener_config" path="/age"/>
+		<choice doc:name="Choice" doc:id="8dde43c7-7dc7-43e8-8df3-178c82fc62bb" >
+			<when expression="#[attributes.queryParams.age &gt;18]">
+				<ee:transform doc:name="Transform Message" doc:id="d1b5dc70-1614-47ec-948d-d905c6977117" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"Eligible to vote"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="4ba73356-aad7-4152-8a7a-bcaf3fb321bc" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"Not Eligible to vote"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="mc-age-suite.xml" />
+	<munit:test name="mc-ageFlow-test" doc:id="9823c9cd-b518-43bf-be02-ef4bb4882c11" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="49da003d-ba94-48ea-a8a1-672564ce1711" >
+				<munit:payload value="#[readUrl('classpath://mcageFlowtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://mcageFlowtest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to mc-ageFlow" doc:id="4f9e8aaf-0347-480e-b208-541aece66dbc" name="mc-ageFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="a81c9ef5-e1c8-4b64-931a-b802fe5362e7" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import mcageFlowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
